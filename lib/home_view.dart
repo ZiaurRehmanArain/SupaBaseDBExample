@@ -243,19 +243,29 @@
 //   }
 // }
 
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supadatabaseapp/controller/services/get_current_user.dart';
+import 'package:supadatabaseapp/controller/services/user_mange_services.dart';
+import 'package:supadatabaseapp/model/current_user.dart';
 import 'package:supadatabaseapp/view/auth/login_view.dart';
 import '../controller/task_provider.dart';
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
+  @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
   final TextEditingController taskController = TextEditingController();
+
   final TextEditingController taskDescController = TextEditingController();
+  CurrentUser?  currentUser;
 
   Future<void> signOutUser(context) async {
     final response = await Supabase.instance.client.auth.signOut();
+    UserMangeServices.clearAll();
 
     Navigator.pushReplacement(
         context,
@@ -264,21 +274,32 @@ class HomeView extends StatelessWidget {
         ));
   }
   @override
+  void initState() {
+  getCurrenUSerdata();
+    super.initState();
+  }
+
+void getCurrenUSerdata()async{
+currentUser=await GetCurrentUser().getCurrentUserData();
+print(currentUser!.name);
+
+
+}
+
+  @override
   Widget build(BuildContext context) {
     Provider.of<TaskProvider>(context, listen: false).fetchTasks();
     return Scaffold(
       appBar: AppBar(
         title: Text('Tasks'),
         actions: [
-                    GestureDetector(
+          GestureDetector(
               onTap: () {
                 showDialog(
                   context: context,
                   builder: (context) => AlertDialog(
-                    title: Text(Supabase.instance.client.auth.currentUser!.email
-                        .toString()),
-                    content: Text(Supabase.instance.client.auth.currentUser!.aud
-                        .toString()),
+                    title: Text(currentUser!.name ),
+                    content: Text(currentUser!.email ),
                   ),
                 );
               },
@@ -290,7 +311,7 @@ class HomeView extends StatelessWidget {
           //   icon: Icon(Icons.add),
           //   onPressed: () => _showTaskDialog(context),
           // ),
-           IconButton(
+          IconButton(
               onPressed: () {
                 signOutUser(context);
               },
@@ -335,9 +356,12 @@ class HomeView extends StatelessWidget {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(onPressed: (){
-        _showTaskDialog(context);
-      },child: Icon(Icons.add),),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _showTaskDialog(context);
+        },
+        child: Icon(Icons.add),
+      ),
     );
   }
 
@@ -373,11 +397,11 @@ class HomeView extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 if (isEdit) {
-                  Provider.of<TaskProvider>(context, listen: false)
-                      .updateTask(taskId!, taskController.text, taskDescController.text);
+                  Provider.of<TaskProvider>(context, listen: false).updateTask(
+                      taskId!, taskController.text, taskDescController.text);
                 } else {
                   Provider.of<TaskProvider>(context, listen: false)
-                      .addTask(taskController.text, taskDescController.text);
+                      .addTask(taskController.text, taskDescController.text,currentUser!.id);
                 }
                 Navigator.pop(context);
               },
@@ -389,7 +413,3 @@ class HomeView extends StatelessWidget {
     );
   }
 }
-
-
-
-

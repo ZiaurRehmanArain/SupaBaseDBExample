@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supadatabaseapp/controller/services/user_mange_services.dart';
 import 'package:supadatabaseapp/home_view.dart';
 import 'package:supadatabaseapp/view/auth/sign_up_view.dart';
 
@@ -12,11 +13,18 @@ class LoginView extends StatelessWidget {
       final response = await Supabase.instance.client.auth
           .signInWithPassword(email: email.text, password: password.text);
 
-      // if (response.user != null) {
+      // get current user data
+      final userResponse = await Supabase.instance.client
+          .from('users')
+          .select('*')
+          .eq('email', email.text)
+          .single();
+      // store data local storage
+      await UserMangeServices.saveMap('currentUser', userResponse);
+      print('user DAta/////////////////////   : ${userResponse['id']}');
+
       print('User signed up: ${response.user}');
-      // } else {
-      //   print('User not crated ');
-      // }
+
       Navigator.pushAndRemoveUntil(context,
           MaterialPageRoute(builder: (context) => HomeView()), (rout) => false);
     } catch (e) {

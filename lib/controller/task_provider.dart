@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supadatabaseapp/controller/services/get_current_user.dart';
 import 'package:supadatabaseapp/model/task_model.dart';
 
 class TaskProvider extends ChangeNotifier {
@@ -11,8 +12,10 @@ class TaskProvider extends ChangeNotifier {
 
   // Fetch tasks from Supabase
   Future<void> fetchTasks() async {
+    final data=await GetCurrentUser().getCurrentUserData();
     try {
-      final response = await supabase.from('task_table').select();
+      final response = await supabase.from('task_table').select().eq('userId', data.id);
+      print(response);
       if (response != null) {
         _tasks = (response as List)
             .map((data) => TaskModel.fromJson(data))
@@ -25,9 +28,9 @@ class TaskProvider extends ChangeNotifier {
   }
 
   // Add a new task
-  Future<void> addTask(String task, String taskDesc) async {
+  Future<void> addTask(String task, String taskDesc,int id) async {
     try {
-      await supabase.from('task_table').insert({'task': task, 'task_desc': taskDesc});
+      await supabase.from('task_table').insert({'task': task, 'task_desc': taskDesc,'userId':id});
       fetchTasks();
     } catch (e) {
       print('Error adding task: $e');

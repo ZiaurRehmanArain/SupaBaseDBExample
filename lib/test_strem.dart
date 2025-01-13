@@ -23,8 +23,8 @@ DBTestStream dbTestStream=DBTestStream();
          );
        },),
        floatingActionButton: FloatingActionButton(onPressed: () {
-          Provider.of<TaskProvider>(context, listen: false)
-                      .addTask('taskController.text', 'taskDescController.text');
+          // Provider.of<TaskProvider>(context, listen: false)
+          //             .addTask('taskController.text', 'taskDescController.text');
        },child: Icon(Icons.add),),
     );
   }
