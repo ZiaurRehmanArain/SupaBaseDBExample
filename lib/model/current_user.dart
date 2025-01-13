@@ -1,15 +1,17 @@
 class CurrentUser {
   final int id;
   final String name;
+  final String image;
   final String email;
 
-  CurrentUser({required this.id, required this.name, required this.email});
+  CurrentUser({required this.id, required this.name, required this.email,required this.image});
   // Factory constructor to create a TaskModel from JSON
   factory CurrentUser.fromJson(Map<String, dynamic> json) {
     return CurrentUser(
       id: json['id'],
       email: json['email'],
       name: json['name'],
+      image: json['image'],
     );
   }
 
@@ -19,6 +21,7 @@ class CurrentUser {
       'id': id,
       'email': email,
       'name': name,
+      'image':image
     };
   }
 

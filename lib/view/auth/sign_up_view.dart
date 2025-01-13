@@ -9,7 +9,7 @@ class SignUpView extends StatelessWidget {
   TextEditingController name = TextEditingController();
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
-
+String? fileName;
 
   Future<void> uploadImage() async {
     try {
@@ -24,7 +24,7 @@ class SignUpView extends StatelessWidget {
 
       // Get the file
       File file = File(pickedFile.path);
-      String fileName =  pickedFile.name;// Extract file name
+       fileName =  pickedFile.name;// Extract file name
 
       print('file name  :  ${fileName}');
 

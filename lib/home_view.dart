@@ -281,7 +281,7 @@ class _HomeViewState extends State<HomeView> {
 
 void getCurrenUSerdata()async{
 currentUser=await GetCurrentUser().getCurrentUserData();
-print(currentUser!.name);
+print(currentUser!.image);
 
 
 }
@@ -295,6 +295,7 @@ print(currentUser!.name);
         actions: [
           GestureDetector(
               onTap: () {
+                print('https://pfobablvsmalctkbkvrk.supabase.co/storage/v1/object/public/images/${currentUser!.image}');
                 showDialog(
                   context: context,
                   builder: (context) => AlertDialog(
@@ -305,6 +306,7 @@ print(currentUser!.name);
               },
               child: CircleAvatar(
                 backgroundColor: Colors.amberAccent,
+                backgroundImage: NetworkImage('https://pfobablvsmalctkbkvrk.supabase.co/storage/v1/object/public/images/userimages/${currentUser!.image}'),
                 radius: 12,
               )),
           // IconButton(
